@@ -1,0 +1,22 @@
+[
+  {
+    "content": "Phase 9.1: Per-client success-rate tracking + auto-mark unhealthy clients",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 9.2: validate_result() + per-source drift detection (rolling 50-window, threshold 60%)",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 9.3: Extension active-job limiter (MAX_ACTIVE_JOBS=3) + adaptive job-pull size",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 9.4: Backend testing — iteration_4: 41/41 (100%), 0 critical, 0 flaky",
+    "status": "completed"
+  },
+  {
+    "content": "Phase 9.5: Admin UI — success-rate %, unhealthy badge, drift indicator + ratio",
+    "status": "completed"
+  }
+]

@@ -1,0 +1,519 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700;800&display=swap');
+@import url('https://api.fontshare.com/v2/css?f[]=cabinet-grotesk@400,500,700,800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* LIGHT theme (admin/cabinet) */
+:root {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 4%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 4%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 4%;
+  --primary: 240 6% 10%;
+  --primary-foreground: 0 0% 98%;
+  --secondary: 240 5% 96%;
+  --secondary-foreground: 240 6% 10%;
+  --muted: 240 5% 96%;
+  --muted-foreground: 240 4% 46%;
+  --accent: 240 5% 96%;
+  --accent-foreground: 240 6% 10%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 240 6% 90%;
+  --input: 240 6% 90%;
+  --ring: 240 6% 10%;
+  --radius: 0.75rem;
+}
+
+/* PUBLIC THEME — BIBI Cars dark+amber */
+.public-theme {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 60 4% 11%;         /* #1D1D1B */
+  --card-foreground: 0 0% 100%;
+  --popover: 60 4% 11%;
+  --popover-foreground: 0 0% 100%;
+  --primary: 41 100% 50%;    /* #FEAE00 */
+  --primary-foreground: 0 0% 0%;
+  --secondary: 60 4% 11%;
+  --secondary-foreground: 0 0% 100%;
+  --muted: 0 0% 37%;          /* #5E5E5E */
+  --muted-foreground: 0 0% 58%;
+  --accent: 41 100% 50%;
+  --accent-foreground: 0 0% 0%;
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 98%;
+  --border: 60 1% 33%;        /* #555452 */
+  --input: 60 1% 33%;
+  --ring: 41 100% 50%;
+  --radius: 0.5rem;
+  background-color: #000;
+  color: #FFFFFF;
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+
+.public-theme ::selection { background: #FEAE00; color: #000; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'IBM Plex Sans', system-ui, sans-serif;
+  background-color: #F7F7F8;
+  color: #18181B;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+h1,h2,h3,h4,h5,h6 { font-family: 'Cabinet Grotesk', system-ui, sans-serif; }
+.public-theme, .public-theme h1, .public-theme h2, .public-theme h3,
+.public-theme h4, .public-theme h5, .public-theme h6 {
+  font-family: 'Manrope', system-ui, sans-serif;
+}
+
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #F4F4F5; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #D4D4D8; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #A1A1AA; }
+.public-theme ::-webkit-scrollbar-track { background: #0E0E0E; }
+.public-theme ::-webkit-scrollbar-thumb { background: #2E2E2E; }
+.public-theme ::-webkit-scrollbar-thumb:hover { background: #404040; }
+
+/* BIBI logo with yellow gradient */
+.bibi-wordmark {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  background: linear-gradient(90deg, #FEAE00 0%, #FFEA43 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+  position: relative;
+  display: inline-block;
+}
+.bibi-cars-tag {
+  font-family: 'Manrope', system-ui, sans-serif;
+  font-weight: 700;
+  font-style: normal;
+  font-size: 0.28em;
+  letter-spacing: 0.12em;
+  color: #FEAE00;
+  position: absolute;
+  top: -0.15em;
+  right: -1.2em;
+}
+.bibi-streaks { display: inline-block; margin-right: 0.15em; vertical-align: middle; }
+.bibi-streaks span {
+  display: block;
+  height: 0.08em;
+  background: linear-gradient(90deg, #FEAE00, #FFEA43);
+  border-radius: 1px;
+  margin: 0.04em 0;
+}
+.bibi-streaks span:nth-child(1){ width: 0.35em; }
+.bibi-streaks span:nth-child(2){ width: 0.55em; }
+.bibi-streaks span:nth-child(3){ width: 0.25em; }
+
+/* Primary CTA button — yellow */
+.btn-amber {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #FEAE00;
+  color: #000;
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 17px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  border-radius: 6px;
+  padding: 14px 32px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 160ms ease;
+  white-space: nowrap;
+}
+.btn-amber:hover { background: #FFBF2D; }
+.btn-amber:active { background: #E89D00; }
+.btn-amber:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-amber-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: transparent;
+  color: #FEAE00;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 17px;
+  text-transform: uppercase;
+  border-radius: 4px;
+  padding: 8px 16px;
+  border: 1px solid #FEAE00;
+  cursor: pointer;
+  transition: background-color 160ms ease, color 160ms ease;
+}
+.btn-amber-outline:hover { background: #FEAE00; color: #000; }
+
+/* Text input on dark */
+.input-dark {
+  width: 100%;
+  background: transparent;
+  border: 1px solid #555452;
+  border-radius: 4px;
+  height: 45px;
+  padding: 0 16px;
+  color: #FFFFFF;
+  font-size: 14px;
+  font-family: 'Manrope', sans-serif;
+  transition: border-color 160ms ease;
+}
+.input-dark::placeholder { color: #949494; }
+.input-dark:focus { outline: none; border-color: #FEAE00; }
+
+/* Hover link amber */
+.link-amber { color: #FFFFFF; transition: color 160ms ease; }
+.link-amber:hover { color: #FEAE00; }
+.link-amber.active { color: #FEAE00; }
+
+/* Image fade-in */
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+.fade-in { animation: fadeIn 240ms ease-out; }
+
+/* ============ LEGACY ADMIN STYLES (untouched) ============ */
+.card { background: white; border-radius: 16px; border: 1px solid #E4E4E7; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.card:hover { border-color: #D4D4D8; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+.table-premium { width: 100%; border-collapse: separate; border-spacing: 0; }
+.table-premium th { text-align: left; padding: 14px 20px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: #71717A; background: #FAFAFA; border-bottom: 1px solid #E4E4E7; }
+.table-premium td { padding: 16px 20px; border-bottom: 1px solid #F4F4F5; font-size: 14px; color: #3F3F46; }
+.table-premium tr:last-child td { border-bottom: none; }
+.table-premium tr:hover td { background: #FAFAFA; }
+.badge { display: inline-flex; align-items: center; padding: 4px 12px; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; border-radius: 9999px; }
+.status-new { background: #EEF2FF; color: #4F46E5; }
+.status-contacted { background: #FEF3C7; color: #D97706; }
+.status-qualified { background: #D1FAE5; color: #059669; }
+.status-proposal { background: #EDE9FE; color: #7C3AED; }
+.status-negotiation { background: #FCE7F3; color: #DB2777; }
+.status-won { background: #D1FAE5; color: #059669; }
+.status-lost { background: #FEE2E2; color: #DC2626; }
+.status-archived { background: #F4F4F5; color: #71717A; }
+.kpi-card { position: relative; overflow: hidden; background: white; border-radius: 16px; border: 1px solid #E4E4E7; padding: 20px 24px; transition: border-color 0.2s ease, box-shadow 0.2s ease; }
+.kpi-card:hover { border-color: #D4D4D8; box-shadow: 0 4px 12px rgba(0,0,0,0.04); }
+.kpi-value { font-family: 'Cabinet Grotesk', sans-serif; font-size: 2.25rem; font-weight: 700; letter-spacing: -0.02em; line-height: 1; color: #18181B; }
+.kpi-label { font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.06em; color: #71717A; margin-top: 8px; }
+.sidebar { width: 260px; background: white; border-right: 1px solid #E4E4E7; min-height: 100vh; display: flex; flex-direction: column; }
+.sidebar-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; font-size: 14px; font-weight: 500; color: #71717A; cursor: pointer; border-radius: 12px; margin: 2px 8px; transition: background-color 0.15s ease, color 0.15s ease; }
+.sidebar-item:hover { background: #F4F4F5; color: #18181B; }
+.sidebar-item.active { background: #18181B; color: white; }
+.sidebar-group-header { display: flex; align-items: center; justify-content: space-between; width: calc(100% - 16px); padding: 12px 16px; font-size: 14px; font-weight: 500; color: #71717A; cursor: pointer; border-radius: 12px; margin: 2px 8px; transition: background-color 0.15s ease, color 0.15s ease; border: none; background: transparent; }
+.sidebar-group-header:hover { background: #F4F4F5; color: #3F3F46; }
+.sidebar-group-header.active { color: #18181B; background: #F4F4F5; }
+.sidebar-group-items { margin-left: 8px; padding-left: 12px; border-left: 2px solid #E4E4E7; margin-bottom: 8px; }
+.sidebar-subitem { display: flex; align-items: center; gap: 10px; padding: 10px 14px; font-size: 14px; font-weight: 500; color: #71717A; cursor: pointer; border-radius: 10px; margin: 2px 8px 2px 0; transition: background-color 0.15s ease, color 0.15s ease; }
+.sidebar-subitem:hover { background: #F4F4F5; color: #18181B; }
+.sidebar-subitem.active { background: #18181B; color: white; }
+.btn-primary { background: #18181B; color: white; padding: 10px 20px; font-size: 14px; font-weight: 500; border: none; border-radius: 12px; cursor: pointer; transition: background-color 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-primary:hover { background: #27272A; }
+.btn-secondary { background: white; color: #18181B; padding: 10px 20px; font-size: 14px; font-weight: 500; border: 1px solid #E4E4E7; border-radius: 12px; cursor: pointer; transition: background-color 0.2s ease, border-color 0.2s ease; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn-secondary:hover { background: #F4F4F5; border-color: #D4D4D8; }
+.input { background: white; border: 1px solid #E4E4E7; border-radius: 12px; padding: 12px 16px; font-size: 14px; color: #18181B; transition: border-color 0.15s ease, box-shadow 0.15s ease; width: 100%; }
+.input::placeholder { color: #A1A1AA; }
+.input:focus { outline: none; border-color: #18181B; box-shadow: 0 0 0 3px rgba(24,24,27,0.08); }
+.period-tabs { display: inline-flex; background: #F4F4F5; border-radius: 12px; padding: 4px; gap: 4px; }
+.period-tab { padding: 8px 16px; font-size: 13px; font-weight: 500; color: #71717A; border-radius: 8px; cursor: pointer; transition: color 0.15s ease, background-color 0.15s ease; border: none; background: transparent; }
+.period-tab:hover { color: #3F3F46; }
+.period-tab.active { background: white; color: #18181B; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+.section-card { background: white; border-radius: 16px; border: 1px solid #E4E4E7; padding: 24px; }
+.section-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 16px; font-weight: 600; color: #18181B; display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+.section-title-clean { font-family: 'Cabinet Grotesk', sans-serif; font-size: 16px; font-weight: 600; color: #18181B; display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.section-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.metric-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #F4F4F5; }
+.metric-row:last-child { border-bottom: none; }
+.metric-label { font-size: 14px; color: #71717A; }
+.metric-value { font-size: 14px; font-weight: 600; color: #18181B; }
+.metric-value.alert { color: #DC2626; }
+@keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+.animate-fade-in-up { animation: fadeInUp 0.3s ease-out forwards; }
+select.input, .custom-select { background: white; border: 1px solid #E4E4E7; border-radius: 12px; padding: 12px 16px; padding-right: 40px; font-size: 14px; color: #18181B; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%2371717A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; background-size: 16px; transition: border-color 0.15s ease, box-shadow 0.15s ease; }
+select.input:hover, .custom-select:hover { border-color: #D4D4D8; }
+select.input:focus, .custom-select:focus { outline: none; border-color: #18181B; box-shadow: 0 0 0 3px rgba(24,24,27,0.08); }
+select.input option, .custom-select option { background: white; color: #18181B; padding: 12px 16px; font-size: 14px; }
+
+
+/* ===== Catalog filter sidebar — thin amber scrollbar (Firefox + WebKit) ===== */
+.filter-sidebar-scroll { scrollbar-width: thin; scrollbar-color: #FEAE00 #1A1A1A; scroll-behavior: smooth; overscroll-behavior: contain; }
+.filter-sidebar-scroll::-webkit-scrollbar { width: 6px; }
+.filter-sidebar-scroll::-webkit-scrollbar-track { background: #141414; border-radius: 3px; }
+.filter-sidebar-scroll::-webkit-scrollbar-thumb { background: #FEAE00; border-radius: 3px; }
+.filter-sidebar-scroll::-webkit-scrollbar-thumb:hover { background: #FFBF2D; }
+
+
+/* ==========================================================================
+   CUSTOMER CABINET — DARK THEME OVERRIDES
+   Activated by wrapping the cabinet in <div className="cabinet-scope" data-theme="dark">.
+   Light theme remains the default, completely untouched.
+   Every rule below is scoped to .cabinet-scope[data-theme="dark"], so nothing
+   outside the cabinet is affected.
+   ========================================================================== */
+
+.cabinet-scope {
+  /* Smooth theme transition for hero surfaces (keeps interactions snappy for text) */
+  transition: background-color 180ms ease;
+}
+
+.cabinet-scope[data-theme="dark"] {
+  color-scheme: dark;
+  background-color: #0A0A09;
+  color: #F4F4F5;
+}
+
+/* --- Page + section surfaces ---------------------------------------------- */
+.cabinet-scope[data-theme="dark"] .bg-\[\#F8F8F8\],
+.cabinet-scope[data-theme="dark"] .bg-\[\#FAFAFA\] {
+  background-color: #0A0A09 !important;
+}
+
+.cabinet-scope[data-theme="dark"] .bg-white {
+  background-color: #17171A !important;
+}
+
+.cabinet-scope[data-theme="dark"] .bg-zinc-50 {
+  background-color: #141416 !important;
+}
+
+.cabinet-scope[data-theme="dark"] .bg-zinc-100,
+.cabinet-scope[data-theme="dark"] .bg-\[\#F4F4F5\] {
+  background-color: #222227 !important;
+}
+
+/* --- Text ----------------------------------------------------------------- */
+.cabinet-scope[data-theme="dark"] .text-\[\#18181B\] {
+  color: #F4F4F5 !important;
+}
+.cabinet-scope[data-theme="dark"] .text-\[\#27272A\] {
+  color: #E4E4E7 !important;
+}
+.cabinet-scope[data-theme="dark"] .text-\[\#71717A\],
+.cabinet-scope[data-theme="dark"] .text-zinc-500,
+.cabinet-scope[data-theme="dark"] .text-slate-600 {
+  color: #A1A1AA !important;
+}
+.cabinet-scope[data-theme="dark"] .text-\[\#A1A1AA\],
+.cabinet-scope[data-theme="dark"] .text-zinc-700 {
+  color: #D4D4D8 !important;
+}
+
+/* --- Borders -------------------------------------------------------------- */
+.cabinet-scope[data-theme="dark"] .border-\[\#E4E4E7\],
+.cabinet-scope[data-theme="dark"] .border-zinc-200,
+.cabinet-scope[data-theme="dark"] .border-zinc-100 {
+  border-color: #27272A !important;
+}
+.cabinet-scope[data-theme="dark"] .border-\[\#F4F4F5\] {
+  border-color: #222227 !important;
+}
+.cabinet-scope[data-theme="dark"] .divide-\[\#E4E4E7\] > :not([hidden]) ~ :not([hidden]),
+.cabinet-scope[data-theme="dark"] .divide-zinc-200 > :not([hidden]) ~ :not([hidden]) {
+  border-color: #27272A !important;
+}
+
+/* --- Brand-black surfaces (sidebar item, avatar, buttons) -----------------
+   In light theme `bg-[#18181B]` is the "active" dark button. In dark theme we
+   promote it to the brand amber so the active state still pops.
+--------------------------------------------------------------------------- */
+.cabinet-scope[data-theme="dark"] .bg-\[\#18181B\] {
+  background-color: #FEAE00 !important;
+  color: #0A0A09 !important;
+}
+.cabinet-scope[data-theme="dark"] .bg-\[\#18181B\]:hover {
+  background-color: #FFBF2D !important;
+}
+.cabinet-scope[data-theme="dark"] .bg-\[\#18181B\] .text-white,
+.cabinet-scope[data-theme="dark"] .bg-\[\#18181B\] svg {
+  color: #0A0A09 !important;
+}
+
+/* --- Hover states --------------------------------------------------------- */
+.cabinet-scope[data-theme="dark"] .hover\:bg-\[\#F4F4F5\]:hover,
+.cabinet-scope[data-theme="dark"] .hover\:bg-zinc-100:hover,
+.cabinet-scope[data-theme="dark"] .hover\:bg-zinc-50:hover {
+  background-color: #1E1E22 !important;
+}
+.cabinet-scope[data-theme="dark"] .hover\:text-\[\#18181B\]:hover {
+  color: #F4F4F5 !important;
+}
+
+/* --- Coloured status bubbles (keep tint but darken surface) ---------------- */
+.cabinet-scope[data-theme="dark"] .bg-red-50 { background-color: rgba(239, 68, 68, 0.12) !important; }
+.cabinet-scope[data-theme="dark"] .bg-amber-50 { background-color: rgba(254, 174, 0, 0.12) !important; }
+.cabinet-scope[data-theme="dark"] .bg-green-50 { background-color: rgba(34, 197, 94, 0.12) !important; }
+.cabinet-scope[data-theme="dark"] .bg-blue-50 { background-color: rgba(59, 130, 246, 0.14) !important; }
+.cabinet-scope[data-theme="dark"] .bg-rose-50 { background-color: rgba(244, 63, 94, 0.12) !important; }
+
+.cabinet-scope[data-theme="dark"] .text-red-500,
+.cabinet-scope[data-theme="dark"] .text-red-600 { color: #FF7A7A !important; }
+.cabinet-scope[data-theme="dark"] .text-amber-600,
+.cabinet-scope[data-theme="dark"] .text-amber-700 { color: #FEAE00 !important; }
+.cabinet-scope[data-theme="dark"] .text-blue-600,
+.cabinet-scope[data-theme="dark"] .text-blue-700 { color: #8AB8FF !important; }
+.cabinet-scope[data-theme="dark"] .text-green-600,
+.cabinet-scope[data-theme="dark"] .text-green-700 { color: #5BE28B !important; }
+
+.cabinet-scope[data-theme="dark"] .hover\:bg-red-50:hover { background-color: rgba(239, 68, 68, 0.18) !important; }
+
+/* --- Inputs / selects ----------------------------------------------------- */
+.cabinet-scope[data-theme="dark"] input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+.cabinet-scope[data-theme="dark"] select,
+.cabinet-scope[data-theme="dark"] textarea {
+  background-color: #0F0F11 !important;
+  color: #F4F4F5 !important;
+  border-color: #2C2C30 !important;
+}
+.cabinet-scope[data-theme="dark"] input::placeholder,
+.cabinet-scope[data-theme="dark"] textarea::placeholder {
+  color: #6B6B73 !important;
+}
+.cabinet-scope[data-theme="dark"] input:focus,
+.cabinet-scope[data-theme="dark"] select:focus,
+.cabinet-scope[data-theme="dark"] textarea:focus {
+  border-color: #FEAE00 !important;
+  box-shadow: 0 0 0 3px rgba(254, 174, 0, 0.22) !important;
+}
+
+/* --- Shadows become subtle in dark ---------------------------------------- */
+.cabinet-scope[data-theme="dark"] .shadow,
+.cabinet-scope[data-theme="dark"] .shadow-sm,
+.cabinet-scope[data-theme="dark"] .shadow-md,
+.cabinet-scope[data-theme="dark"] .shadow-lg {
+  box-shadow: 0 10px 28px -12px rgba(0, 0, 0, 0.6) !important;
+}
+
+/* --- Progress bars / fill strips ------------------------------------------ */
+.cabinet-scope[data-theme="dark"] .bg-\[\#FEAE00\] {
+  box-shadow: 0 0 0 1px rgba(254, 174, 0, 0.25);
+}
+
+/* --- Theme toggle pill ---------------------------------------------------- */
+.cabinet-theme-toggle {
+  --pill-bg: #F4F4F5;
+  --pill-indicator: #FFFFFF;
+  --pill-text: #71717A;
+  --pill-active-text: #18181B;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: 999px;
+  background: var(--pill-bg);
+  border: 1px solid #E4E4E7;
+  user-select: none;
+}
+.cabinet-scope[data-theme="dark"] .cabinet-theme-toggle {
+  --pill-bg: #141416;
+  --pill-indicator: #FEAE00;
+  --pill-text: #A1A1AA;
+  --pill-active-text: #0A0A09;
+  border-color: #2C2C30;
+}
+.cabinet-theme-toggle button {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  color: var(--pill-text);
+  transition: all 140ms ease;
+}
+.cabinet-theme-toggle button:hover { color: var(--pill-active-text); }
+.cabinet-theme-toggle button[data-active="true"] {
+  background: var(--pill-indicator);
+  color: var(--pill-active-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+.cabinet-scope[data-theme="dark"] .cabinet-theme-toggle button[data-active="true"] {
+  box-shadow: 0 0 0 1px rgba(254, 174, 0, 0.3), 0 4px 14px -4px rgba(254, 174, 0, 0.6);
+}
+
+/* --- Toast / notification defaults ---------------------------------------- */
+.cabinet-scope[data-theme="dark"] .bg-yellow-50 { background-color: rgba(254, 174, 0, 0.10) !important; }
+.cabinet-scope[data-theme="dark"] .border-yellow-200 { border-color: rgba(254, 174, 0, 0.30) !important; }
+
+/* Make the avatar circle background readable on dark */
+.cabinet-scope[data-theme="dark"] .bg-\[\#18181B\].text-white {
+  background-color: #FEAE00 !important;
+  color: #0A0A09 !important;
+}
+
+/* ---------- Sonner toast (BIBI dark/amber palette) ---------- */
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast] {
+  background: #1D1D1B !important;
+  color: #FFFFFF !important;
+  border: 1px solid #3a3a38 !important;
+  border-radius: 10px !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.55) !important;
+}
+
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast][data-type='success'] {
+  border-color: rgba(254, 174, 0, 0.45) !important;
+}
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast][data-type='success'] [data-icon] {
+  color: #FEAE00 !important;
+}
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast][data-type='success'] [data-icon] svg {
+  color: #FEAE00 !important;
+}
+
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast][data-type='error'] {
+  border-color: rgba(239, 68, 68, 0.55) !important;
+}
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast][data-type='error'] [data-icon] svg {
+  color: #f87171 !important;
+}
+
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast][data-type='info'] {
+  border-color: rgba(254, 174, 0, 0.35) !important;
+}
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast][data-type='info'] [data-icon] svg {
+  color: #FEAE00 !important;
+}
+
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast] [data-title] {
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+}
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast] [data-description] {
+  color: #B0B0B0 !important;
+}
+
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast] [data-close-button] {
+  background: #2a2a28 !important;
+  border-color: #3a3a38 !important;
+  color: #B0B0B0 !important;
+}
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast] [data-close-button]:hover {
+  color: #FEAE00 !important;
+  border-color: #FEAE00 !important;
+}
+
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast] [data-button] {
+  background: #FEAE00 !important;
+  color: #0A0A09 !important;
+  font-weight: 600 !important;
+}
+[data-sonner-toaster][data-theme='dark'] [data-sonner-toast] [data-button]:hover {
+  background: #FFBF2D !important;
+}
+

@@ -1,0 +1,91 @@
+{
+  "manifest_version": 3,
+  "name": "BIBI Cars Parser",
+  "version": "4.0.0",
+  "description": "Multi-source VIN parser: bid.cars, copart, carfast, poctra, carsfromwest, autoauctionhistory, salvagebid",
+  "permissions": [
+    "cookies",
+    "storage",
+    "activeTab",
+    "tabs",
+    "scripting",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://www.copart.com/*",
+    "https://copart.com/*",
+    "https://*.copart.com/*",
+    "https://bid.cars/*",
+    "https://*.bid.cars/*",
+    "https://carfast.express/*",
+    "https://*.carfast.express/*",
+    "https://poctra.com/*",
+    "https://*.poctra.com/*",
+    "https://carsfromwest.com/*",
+    "https://*.carsfromwest.com/*",
+    "https://autoauctionhistory.com/*",
+    "https://*.autoauctionhistory.com/*",
+    "https://www.salvagebid.com/*",
+    "https://*.salvagebid.com/*",
+    "https://*.emergentagent.com/*",
+    "http://localhost:8001/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://www.copart.com/lot/*", "https://copart.com/lot/*"],
+      "js": ["content_copart_dom.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.copart.com/*", "https://copart.com/*", "https://*.copart.com/*"],
+      "js": ["content_copart.js", "content_copart_search.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://bid.cars/*", "https://*.bid.cars/*"],
+      "js": ["content_bidcars.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://carfast.express/*", "https://*.carfast.express/*"],
+      "js": ["content_carfast.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://poctra.com/*", "https://*.poctra.com/*"],
+      "js": ["utils/sender.js", "sites/poctra.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://carsfromwest.com/*", "https://*.carsfromwest.com/*"],
+      "js": ["utils/sender.js", "sites/carsfromwest.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://autoauctionhistory.com/*", "https://*.autoauctionhistory.com/*"],
+      "js": ["utils/sender.js", "sites/autoauctionhistory.js"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["https://www.salvagebid.com/*", "https://*.salvagebid.com/*"],
+      "js": ["utils/sender.js", "sites/salvagebid.js"],
+      "run_at": "document_idle"
+    }
+  ],
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}
