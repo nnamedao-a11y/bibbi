@@ -12489,6 +12489,276 @@ async def ext_drifting():
     }
 
 
+@fastapi_app.get("/api/control/overview")
+async def control_overview():
+    """Single-fetch aggregator for the admin Control Center page.
+
+    Returns the data needed to render:
+      * a SYSTEM STATUS bar (red / yellow / green),
+      * the EXTENSION STATUS card,
+      * the unified SOURCES grid (BitMotors / WestMotors / Lemon /
+        AuctionAuto / Extension layer),
+      * a PERFORMANCE summary,
+      * an ALERTS list.
+
+    The payload is intentionally flat — UI is just rendering, not
+    deriving state.
+    """
+    health = _ms_health()
+    clients_payload = {
+        "total": len(_ms_get_clients()),
+        "online": sum(1 for c in _ms_get_clients() if c.get("online")),
+        "clients": _ms_get_clients(),
+    }
+    sources = health.get("sources", {}) or {}
+
+    # ── BitMotors live tier (from circuit-breaker stats inside vin_service) ──
+    try:
+        from vin_service import get_circuit_stats
+        cb = get_circuit_stats() or {}
+    except Exception:
+        cb = {}
+    bm_search = cb.get("bitmotors_search") or {}
+    bm_page = cb.get("bitmotors_page") or {}
+    bm_open = bool(bm_search.get("is_open")) or bool(bm_page.get("is_open"))
+
+    # ── WestMotors INDEX tier ─────────────────────────────────────────────
+    wm_status_doc: dict = {}
+    try:
+        wm_status_doc = await db.westmotors_state.find_one(  # type: ignore[name-defined]
+            {"_id": "v1"}
+        ) or {}
+    except Exception:
+        pass
+
+    # ── Lemon INDEX tier ──────────────────────────────────────────────────
+    lemon_status_doc: dict = {}
+    try:
+        lemon_status_doc = await db.lemon_state.find_one(  # type: ignore[name-defined]
+            {"_id": "v1"}
+        ) or {}
+    except Exception:
+        pass
+
+    # ── Extension layer aggregate ─────────────────────────────────────────
+    ext_caps = ["poctra", "carsfromwest", "autoauctionhistory", "salvagebid"]
+    ext_layer_calls = sum(int((sources.get(s) or {}).get("calls") or 0) for s in ext_caps)
+    ext_layer_hits = sum(int((sources.get(s) or {}).get("hits") or 0) for s in ext_caps)
+    ext_layer_errs = sum(int((sources.get(s) or {}).get("errors") or 0) for s in ext_caps)
+    ext_layer_p50 = max(
+        (int((sources.get(s) or {}).get("latency_p50_ms") or 0) for s in ext_caps),
+        default=0,
+    )
+    ext_layer_p95 = max(
+        (int((sources.get(s) or {}).get("latency_p95_ms") or 0) for s in ext_caps),
+        default=0,
+    )
+    ext_clients_online = clients_payload["online"]
+
+    # ── compose unified source rows ───────────────────────────────────────
+    def status_for(calls: int, errors: int, healthy: bool, drifting: bool, degraded: bool) -> str:
+        if not healthy or degraded:
+            return "down"
+        if drifting:
+            return "drift"
+        if errors > 0 and calls > 0 and (errors / max(calls, 1)) > 0.2:
+            return "warn"
+        return "ok"
+
+    rows: list[dict] = []
+
+    rows.append({
+        "key": "bitmotors",
+        "label": "BitMotors",
+        "tier": "LIVE",
+        "calls": int(bm_search.get("total_calls") or 0)
+                + int(bm_page.get("total_calls") or 0),
+        "hits": int(bm_search.get("total_success") or 0)
+                + int(bm_page.get("total_success") or 0),
+        "errors": int(bm_search.get("total_failures") or 0)
+                  + int(bm_page.get("total_failures") or 0),
+        "latency_p50_ms": int(bm_search.get("latency_p50_ms") or 0),
+        "latency_p95_ms": int(bm_search.get("latency_p95_ms") or 0),
+        "hit_ratio": round(
+            (int(bm_search.get("total_success") or 0)
+             + int(bm_page.get("total_success") or 0))
+            / max(1, int(bm_search.get("total_calls") or 0)
+                     + int(bm_page.get("total_calls") or 0)),
+            3,
+        ),
+        "status": "down" if bm_open else "ok",
+        "circuit_open": bm_open,
+    })
+
+    wm_calls = int(wm_status_doc.get("total_lookups") or 0)
+    wm_hits = int(wm_status_doc.get("total_hits") or 0)
+    wm_errs = int(wm_status_doc.get("total_errors") or 0)
+    wm_p50 = int(wm_status_doc.get("latency_p50_ms") or 0)
+    rows.append({
+        "key": "westmotors",
+        "label": "WestMotors",
+        "tier": "INDEX",
+        "calls": wm_calls,
+        "hits": wm_hits,
+        "errors": wm_errs,
+        "latency_p50_ms": wm_p50,
+        "latency_p95_ms": int(wm_status_doc.get("latency_p95_ms") or 0),
+        "hit_ratio": round(wm_hits / max(1, wm_calls), 3) if wm_calls else 0.0,
+        "status": "ok",
+    })
+
+    lm_calls = int(lemon_status_doc.get("total_lookups") or 0)
+    lm_hits = int(lemon_status_doc.get("total_hits") or 0)
+    lm_errs = int(lemon_status_doc.get("total_errors") or 0)
+    rows.append({
+        "key": "lemon",
+        "label": "Lemon",
+        "tier": "INDEX",
+        "calls": lm_calls,
+        "hits": lm_hits,
+        "errors": lm_errs,
+        "latency_p50_ms": int(lemon_status_doc.get("latency_p50_ms") or 0),
+        "latency_p95_ms": int(lemon_status_doc.get("latency_p95_ms") or 0),
+        "hit_ratio": round(lm_hits / max(1, lm_calls), 3) if lm_calls else 0.0,
+        "status": "ok",
+    })
+
+    aa = sources.get("auctionauto") or {}
+    aa_status = (
+        "down" if aa.get("circuit_open") else
+        "drift" if aa.get("drifting") else
+        "ok"
+    )
+    rows.append({
+        "key": "auctionauto",
+        "label": "AuctionAuto",
+        "tier": "HTTP",
+        "calls": int(aa.get("calls") or 0),
+        "hits": int(aa.get("hits") or 0),
+        "errors": int(aa.get("errors") or 0),
+        "latency_p50_ms": int(aa.get("latency_p50_ms") or 0),
+        "latency_p95_ms": int(aa.get("latency_p95_ms") or 0),
+        "hit_ratio": float(aa.get("hit_ratio") or 0),
+        "status": aa_status,
+        "drift_ratio": aa.get("drift_ratio"),
+    })
+
+    rows.append({
+        "key": "extension",
+        "label": "Extension Layer",
+        "tier": "EXT",
+        "calls": ext_layer_calls,
+        "hits": ext_layer_hits,
+        "errors": ext_layer_errs,
+        "latency_p50_ms": ext_layer_p50,
+        "latency_p95_ms": ext_layer_p95,
+        "hit_ratio": round(ext_layer_hits / max(1, ext_layer_calls), 3)
+                     if ext_layer_calls else 0.0,
+        "status": "down" if ext_clients_online == 0 else "ok",
+        "clients_online": ext_clients_online,
+        "subsources": ext_caps,
+    })
+
+    # ── overall system status logic ───────────────────────────────────────
+    alerts: list[str] = []
+    if ext_clients_online == 0:
+        alerts.append("No extension clients — Cloudflare-protected sources are disabled")
+    for r in rows:
+        if r["status"] == "down":
+            alerts.append(f"{r['label']} is down")
+        elif r["status"] == "drift":
+            alerts.append(f"{r['label']} is drifting (parser may be returning bad data)")
+        elif r["status"] == "warn":
+            alerts.append(
+                f"{r['label']} has elevated error rate "
+                f"({int((r['errors']/max(r['calls'],1))*100)}%)"
+            )
+    for d in health.get("drifting_sources") or []:
+        alerts.append(f"Source '{d}' silent drift detected")
+    # Unhealthy clients (silent-death detection)
+    for c in clients_payload["clients"]:
+        if c.get("unhealthy"):
+            alerts.append(
+                f"Client {c.get('label') or c.get('client_id')} marked unhealthy "
+                f"(success rate {int((c.get('success_rate_recent') or 0)*100)}%)"
+            )
+
+    if ext_clients_online == 0 or any(r["status"] == "down" for r in rows[:3]):
+        # critical primary sources down OR no extension clients
+        system_status = "red"
+        system_label = "DEGRADED"
+    elif any(r["status"] in ("down", "warn", "drift") for r in rows) or alerts:
+        system_status = "yellow"
+        system_label = "PARTIAL"
+    else:
+        system_status = "green"
+        system_label = "OK"
+
+    # ── performance aggregate ─────────────────────────────────────────────
+    aggregate_calls = sum(r["calls"] for r in rows)
+    aggregate_hits = sum(r["hits"] for r in rows)
+    aggregate_errors = sum(r["errors"] for r in rows)
+    nonzero_p50 = [r["latency_p50_ms"] for r in rows if r["latency_p50_ms"] > 0]
+    nonzero_p95 = [r["latency_p95_ms"] for r in rows if r["latency_p95_ms"] > 0]
+    perf = {
+        "p50_ms": int(sum(nonzero_p50) / len(nonzero_p50)) if nonzero_p50 else 0,
+        "p95_ms": int(max(nonzero_p95)) if nonzero_p95 else 0,
+        "hit_rate": round(aggregate_hits / max(1, aggregate_calls), 3) if aggregate_calls else 0.0,
+        "error_rate": round(aggregate_errors / max(1, aggregate_calls), 3) if aggregate_calls else 0.0,
+        "total_calls": aggregate_calls,
+    }
+
+    return {
+        "system": {"status": system_status, "label": system_label},
+        "extension": {
+            "online": ext_clients_online,
+            "total": clients_payload["total"],
+            "clients": clients_payload["clients"],
+            "max_active_jobs": 3,  # mirror MAX_ACTIVE_JOBS in ext background.js
+            "queue_depth": int(health.get("queue_depth") or 0),
+            "in_flight": int(health.get("results_in_flight") or 0),
+            "obs_cache_vins": int(health.get("observation_cache_vins") or 0),
+        },
+        "sources": rows,
+        "performance": perf,
+        "alerts": alerts[:20],
+        "ts": int(time.time()),
+    }
+
+
+@fastapi_app.post("/api/control/debug/probe")
+async def control_debug_probe(payload: dict):
+    """Run a VIN/LOT probe through the resolver and report which source
+    answered (used by the admin DEBUG block).
+
+    Body: {"query": "5YJSA1E25HF199047"}
+    """
+    q = (payload or {}).get("query") or (payload or {}).get("vin") or ""
+    q = q.strip()
+    if not q:
+        raise HTTPException(status_code=400, detail="query required")
+    try:
+        from vin_service import get_car_by_vin
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"resolver unavailable: {e}")
+
+    t0 = time.time()
+    res = await get_car_by_vin(q)
+    dt_ms = int((time.time() - t0) * 1000)
+    return {
+        "query": q,
+        "found": bool(res.get("found")),
+        "source": res.get("source"),
+        "latency_ms": dt_ms,
+        "title": (res.get("data") or {}).get("title"),
+        "year": (res.get("data") or {}).get("year"),
+        "make": (res.get("data") or {}).get("make"),
+        "model": (res.get("data") or {}).get("model"),
+        "image_count": (res.get("data") or {}).get("image_count")
+                       or len((res.get("data") or {}).get("images") or []),
+    }
+
+
 @fastapi_app.post("/api/ext/validate")
 async def ext_validate(payload: dict):
     """Standalone validator — useful for the admin to test if a parsed
